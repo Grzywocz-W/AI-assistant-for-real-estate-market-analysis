@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:md="clr-namespace:MdXaml;assembly=MdXaml"
         xmlns:local="clr-namespace:Estate_Predictor"
         xmlns:vm="clr-namespace:Estate_Predictor.ViewModel"
         mc:Ignorable="d"
@@ -90,6 +91,11 @@
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="bdr" Property="Opacity" Value="0.9"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="bdr" Property="Background" Value="#E2E8F0"/>
+                                <Setter Property="Foreground" Value="#94A3B8"/>
+                                <Setter Property="Cursor" Value="Arrow"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -291,9 +297,13 @@
                                             </Style.Triggers>
                                         </Style>
                                     </Border.Style>
-                                    <TextBlock Text="{Binding Text}" TextWrapping="Wrap" FontSize="14" LineHeight="22">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
+
+                                    <md:MarkdownScrollViewer Markdown="{Binding Text}" 
+                                                             Background="Transparent"
+                                                             MarkdownStyleName="Standard"
+                                                             VerticalScrollBarVisibility="Disabled">
+                                        <md:MarkdownScrollViewer.Style>
+                                            <Style TargetType="md:MarkdownScrollViewer">
                                                 <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding IsUser}" Value="True">
@@ -301,8 +311,8 @@
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
+                                        </md:MarkdownScrollViewer.Style>
+                                    </md:MarkdownScrollViewer>
                                 </Border>
                             </Grid>
                         </DataTemplate>
@@ -332,7 +342,9 @@
                         <TextBox x:Name="InputBox" Style="{StaticResource ModernTextBox}" Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" MaxHeight="100"/>
                     </Grid>
                     <Button Grid.Column="1" Style="{StaticResource GradientButton}" Width="50" Height="50" Margin="15,0,0,0" Command="{Binding CanSend}">
-                        <Path Data="{StaticResource IconSend}" Fill="White" Width="20" Height="20" Stretch="Uniform" Margin="2,2,0,0"/>
+                        <Path Data="{StaticResource IconSend}" 
+                              Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" 
+                              Width="20" Height="20" Stretch="Uniform" Margin="2,2,0,0"/>
                     </Button>
                 </Grid>
             </Border>

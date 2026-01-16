@@ -12,9 +12,14 @@ namespace Estate_Predictor.Model
         public bool IsUser {  get; set; }
         public DateTime Timestamp { get; set; } = DateTime.Now;
 
-        public ChatMessage(string text, bool isU) { 
+        public ChatMessage() { 
+            // wywaliło mi błąd i się dowiedziałem, że do deserialziacji musi być pusty konstruktor
+        }   // dlatego należy stworzyć drugi konstruktor
+            //przeciążenie konstruktora
+        public ChatMessage(string text, bool isUser)
+        {
             Text = text;
-            IsUser = isU;
+            IsUser = isUser;
         }
     }
 }
