@@ -49,9 +49,11 @@ parent_dir = os.path.dirname(script_dir)
 
 #dodajcie swoje
 
-model_path = r"Projekt\Estate Predictor\model.keras"
-scaler_x_path = r"Projekt\Estate Predictor\minmaxscalerx.skops"
-scaler_y_path = r"Projekt\Estate Predictor\minmaxscalery.skops"
+model_path = r"Estate Predictor\model.keras"
+scaler_x_path = r"\Estate Predictor\minmaxscalerx.skops"
+scaler_y_path = r"\Estate Predictor\minmaxscalery.skops"
+
+
 
 model = load_model(model_path)
 unknown_types = sio.get_untrusted_types(file=scaler_x_path)
@@ -75,7 +77,8 @@ def initialize_agent_system(api_key):
     os.environ['GOOGLE_GENAI_USE_VERTEXAT'] = 'False'
 
     house_price_prediction_agent = LlmAgent(
-        model="gemini-2.5-flash",
+        #model="gemini-2.5-flash",
+        model = "gemini-2.5-flash-lite",
         name='house_price_prediction_agent',
         description="Answers user questions about house prices in Paris and suggest the best accomodation price for given parameters.",
         instruction="""

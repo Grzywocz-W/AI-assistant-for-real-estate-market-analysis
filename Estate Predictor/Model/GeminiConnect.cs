@@ -9,20 +9,28 @@ using System.Windows;
 using static System.Net.WebRequestMethods;
 using System.Data;
 using Python.Runtime;
+using System.ComponentModel;//bez tego: błędy z runtime
+
+
 
 namespace Estate_Predictor.Model
 {
     public class GeminiConnect
     {
         private readonly string key = Environment.GetEnvironmentVariable("Gemini_API_Key");
-        private static readonly HttpClient client = new HttpClient();
+        //private static readonly HttpClient client = new HttpClient();
         private bool is_Connected { get; set; }
         //private string url { get; set; }
         public GeminiConnect() 
         {
-            is_Connected = false;
+            if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
+            {
+                is_Connected = false;
+                return;
+            }
             //string url = "http://127.0.0.1:8000/chat";
             //connect();
+            is_Connected = false;
             InitializePython();
         }
 
@@ -30,8 +38,8 @@ namespace Estate_Predictor.Model
         private void InitializePython()
         {
             try
-            {                           //podajcie swoją scieżkę
-                string pythonDllPath = @"    \Python\Python312\python312.dll";
+            {                           //ścieżka do konfiguracji
+                string pythonDllPath = @"AppData\Local\Programs\Python\Python312\python312.dll";
 
                 if (!System.IO.File.Exists(pythonDllPath))
                 {
@@ -40,7 +48,11 @@ namespace Estate_Predictor.Model
                     return;
                 }
 
-                Runtime.PythonDLL = pythonDllPath;
+                if (string.IsNullOrEmpty(Runtime.PythonDLL))
+                {
+                    Runtime.PythonDLL = pythonDllPath;
+                }
+
 
                 if (!PythonEngine.IsInitialized)
                 {
@@ -52,8 +64,16 @@ namespace Estate_Predictor.Model
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show($"{ex.Message}");
-                is_Connected = false;
+
+                if (PythonEngine.IsInitialized)
+                {
+                    is_Connected = true;
+                }
+                else
+                {
+                    System.Windows.MessageBox.Show($"Błąd inicjalizacji Pythona: {ex.Message}");
+                    is_Connected = false;
+                }
             }
         }
 
@@ -78,7 +98,6 @@ namespace Estate_Predictor.Model
                     sys.path.append(currentDir);
 
                     dynamic pythonScript = Py.Import("Gemini_Config");
-                    // jak nie działa to zróbcie (prawy na skrypt -> własciwości i zamieńcie na końcu "Zawsze kopiuj do katalogu wyjściowego")
                     string result = pythonScript.generate_text(key, input);
 
                     return result;

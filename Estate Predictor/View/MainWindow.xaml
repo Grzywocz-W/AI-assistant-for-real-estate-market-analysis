@@ -6,33 +6,336 @@
         xmlns:local="clr-namespace:Estate_Predictor"
         xmlns:vm="clr-namespace:Estate_Predictor.ViewModel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Estate Price Predictor AI" 
+        Height="768" 
+        Width="1200"
+        WindowStartupLocation="CenterScreen"
+        Background="#F3F4F6">
 
     <Window.DataContext>
         <vm:MainWindow_VM />
     </Window.DataContext>
 
-    <Grid Margin="10">
+    <Window.Resources>
+        <SolidColorBrush x:Key="PrimaryDark" Color="#1E293B"/>
+        <SolidColorBrush x:Key="PrimaryAccent" Color="#3B82F6"/>
+        <SolidColorBrush x:Key="BackgroundLight" Color="#F8FAFC"/>
+        <SolidColorBrush x:Key="SurfaceWhite" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="TextPrimary" Color="#0F172A"/>
+        <SolidColorBrush x:Key="TextSecondary" Color="#64748B"/>
+
+        <Geometry x:Key="IconHome">M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z M9 22V12h6v10</Geometry>
+        <Geometry x:Key="IconSend">M22 2L11 13 M22 2l-7 20-4-9-9-4 20-7z</Geometry>
+        <Geometry x:Key="IconBot">M12 2a2 2 0 0 1 2 2v2h.5A2.5 2.5 0 0 1 17 8.5V11h1v2h-1v5a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2v-5H6v-2h1V8.5A2.5 2.5 0 0 1 9.5 6H10V4a2 2 0 0 1 2-2m-3 9v2h2v-2h-2m4 0v2h2v-2h-2z</Geometry>
+        <Geometry x:Key="IconPlus">M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z</Geometry>
+        <Geometry x:Key="IconSettings">M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z</Geometry>
+
+        <DropShadowEffect x:Key="SoftShadow" BlurRadius="20" ShadowDepth="5" Direction="270" Color="#94A3B8" Opacity="0.15"/>
+
+        <Style TargetType="ScrollBar">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Width" Value="8"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Grid>
+                            <Track Name="PART_Track" IsDirectionReversed="true">
+                                <Track.Thumb>
+                                    <Thumb>
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="Thumb">
+                                                <Border Background="#CBD5E1" CornerRadius="4"/>
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ModernTextBox" TargetType="TextBox">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+            <Setter Property="CaretBrush" Value="{StaticResource PrimaryAccent}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <ScrollViewer x:Name="PART_ContentHost"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="GradientButton" TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bdr" CornerRadius="12">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#3B82F6" Offset="0"/>
+                                    <GradientStop Color="#2563EB" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bdr" Property="Opacity" Value="0.9"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ChatListBoxItem" TargetType="ListBoxItem">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="bdr" 
+                                Background="{TemplateBinding Background}" 
+                                CornerRadius="8" 
+                                Padding="12,10" 
+                                BorderThickness="1" 
+                                BorderBrush="Transparent"
+                                Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=Window}}">
+
+                            <Border.InputBindings>
+                                <MouseBinding Gesture="LeftDoubleClick" 
+                                              Command="{Binding Tag.RenameChatCommand, RelativeSource={RelativeSource AncestorType=Border}}"
+                                              CommandParameter="{Binding}"/>
+
+                                <MouseBinding Gesture="Shift+LeftClick" 
+                                              Command="{Binding Tag.DeleteChatCommand, RelativeSource={RelativeSource AncestorType=Border}}"
+                                              CommandParameter="{Binding}"/>
+                            </Border.InputBindings>
+
+                            <TextBlock Text="{Binding Name}" Foreground="#94A3B8" FontSize="14" TextTrimming="CharacterEllipsis"/>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bdr" Property="Background" Value="#334155"/>
+                                <Setter TargetName="bdr" Property="BorderBrush" Value="#475569"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="bdr" Property="Background" Value="#2563EB"/>
+                            </Trigger>
+                            <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="True">
+                                <Setter Property="Foreground" Value="White"/>
+                            </DataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True"/>
+                                    <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="False"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Foreground" Value="#E2E8F0"/>
+                            </MultiDataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="60" />
+            <ColumnDefinition Width="260"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        
-        <TextBox
-            Grid.Column="0"
-            Margin="0,0,10,0"
-            FontSize="16"
-            VerticalAlignment="Center"
-            TextWrapping="Wrap"
-            Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" />
+        <Border Grid.Column="0" Background="{StaticResource PrimaryDark}">
+            <Grid Margin="20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-        <Button
-            Grid.Column="1"
-            Command="{Binding CanSend}"  Content="ASK"
-            Width="50"
-            Height="50"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Center" />
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,30">
+                    <Path Data="{StaticResource IconHome}" Fill="#3B82F6" Width="20" Height="20" Stretch="Uniform" VerticalAlignment="Center"/>
+                    <TextBlock Text="EstateAI" Foreground="White" FontSize="20" FontWeight="Bold" Margin="15,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <Button Grid.Row="1" Command="{Binding NewChatCommand}" 
+                        Background="Transparent" BorderThickness="0" 
+                        Cursor="Hand" Margin="0,0,0,25" Height="45">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="newChatBtn" Background="#334155" CornerRadius="8" BorderBrush="#475569" BorderThickness="1">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Path Data="{StaticResource IconPlus}" Fill="White" Width="12" Height="12" Margin="0,0,10,0"/>
+                                    <TextBlock Text="New Valuation" Foreground="White" FontSize="14" FontWeight="SemiBold"/>
+                                </StackPanel>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="newChatBtn" Property="Background" Value="#475569"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+                <TextBlock Grid.Row="2" Text="HISTORY" Foreground="#64748B" FontSize="11" FontWeight="Bold" Margin="5,0,0,10"/>
+
+                <ListBox Grid.Row="3" 
+                         ItemsSource="{Binding Sessions}" 
+                         SelectedItem="{Binding SelectedSession}"
+                         ItemContainerStyle="{StaticResource ChatListBoxItem}"
+                         Background="Transparent" 
+                         BorderThickness="0"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                </ListBox>
+
+                <Button Grid.Row="4" 
+                        HorizontalAlignment="Left" 
+                        VerticalAlignment="Center" 
+                        Margin="5,0,0,0"
+                        Background="Transparent" 
+                        BorderThickness="0"
+                        Cursor="Hand">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="Transparent">
+                                <Path x:Name="SettingsIcon" Data="{StaticResource IconSettings}" Fill="#94A3B8" Width="22" Height="22" Stretch="Uniform"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="SettingsIcon" Property="Fill" Value="White"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Column="1" Background="{StaticResource BackgroundLight}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0" Background="{StaticResource SurfaceWhite}" Padding="30,20" BorderThickness="0,0,0,1" BorderBrush="#E2E8F0">
+                <StackPanel>
+                    <TextBlock Text="{Binding SelectedSession.Name, FallbackValue='New Valuation'}" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimary}"/>
+                    <TextBlock Text="AI Model v0.9 • Powered by Gemini" FontSize="13" Foreground="{StaticResource TextSecondary}" Margin="0,4,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <ScrollViewer x:Name="ChatScrollViewer" Grid.Row="1" Margin="30,20" VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding ChatHistory}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,0,0,20">
+                                <Grid.Style>
+                                    <Style TargetType="Grid">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsUser}" Value="True">
+                                                <Setter Property="HorizontalAlignment" Value="Right"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsUser}" Value="False">
+                                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Style>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" Width="36" Height="36" CornerRadius="18" Background="#DBEAFE" VerticalAlignment="Top" Margin="0,0,10,0">
+                                    <Path Data="{StaticResource IconBot}" Fill="{StaticResource PrimaryAccent}" Width="18" Height="18" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsUser}" Value="False">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                </Border>
+
+                                <Border Grid.Column="1" Padding="15" MaxWidth="500">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background" Value="White"/>
+                                            <Setter Property="CornerRadius" Value="0,16,16,16"/>
+                                            <Setter Property="Effect" Value="{StaticResource SoftShadow}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsUser}" Value="True">
+                                                    <Setter Property="Background" Value="{StaticResource PrimaryAccent}"/>
+                                                    <Setter Property="CornerRadius" Value="16,0,16,16"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <TextBlock Text="{Binding Text}" TextWrapping="Wrap" FontSize="14" LineHeight="22">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsUser}" Value="True">
+                                                        <Setter Property="Foreground" Value="White"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <Border Grid.Row="2" Background="White" Padding="20" Margin="30,0,30,30" CornerRadius="16" Effect="{StaticResource SoftShadow}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0" VerticalAlignment="Center">
+                        <TextBlock Text="Describe the property..." Foreground="#94A3B8" FontSize="15" Margin="5,0,0,0" IsHitTestVisible="False">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Text, ElementName=InputBox}" Value="">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <TextBox x:Name="InputBox" Style="{StaticResource ModernTextBox}" Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" MaxHeight="100"/>
+                    </Grid>
+                    <Button Grid.Column="1" Style="{StaticResource GradientButton}" Width="50" Height="50" Margin="15,0,0,0" Command="{Binding CanSend}">
+                        <Path Data="{StaticResource IconSend}" Fill="White" Width="20" Height="20" Stretch="Uniform" Margin="2,2,0,0"/>
+                    </Button>
+                </Grid>
+            </Border>
+        </Grid>
     </Grid>
 </Window>
